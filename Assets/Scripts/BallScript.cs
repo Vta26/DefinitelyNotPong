@@ -13,6 +13,8 @@ public class BallScript : MonoBehaviour
     private int score_left = 0;
     private int score_right = 0;
     private bool game_over = false;
+    public float target_x;
+    public double target_y;
     public TextMeshProUGUI _text;
     public TextMeshProUGUI _winner_text;
     void Start()
@@ -49,6 +51,49 @@ public class BallScript : MonoBehaviour
         transform.position += move * _speed * Time.deltaTime;
     }
 
+    private void prediction(double tempy, double changey)
+    {
+        //Wall collisions are at 4.69 and -4.69 => 9.38
+        //Player collisions are at 9.656 and -9.669 => 19.325
+        double total_change = changey + tempy;
+        if (total_change>9.38)
+        {
+            changey = -(total_change - 9.38);
+            prediction(9.38,changey);
+            return;
+        }
+        if (total_change<0)//why is this not working :((
+        {
+            changey = -(changey + tempy);
+            prediction(0,changey);
+            return;
+        }
+        if (changey < 0)
+        {
+            Debug.Log("Final direction Down");
+            if (tempy==9.38)
+            {
+                target_y = 4.69 + changey;
+            }
+            else
+            {
+                target_y = tempy - 4.69 + changey;
+            }
+        }
+        else
+        {
+            Debug.Log("Final direction Up");
+            if (tempy==0)
+            {
+                target_y = -4.69 + changey;
+            }
+            else
+            {
+                target_y = tempy - 4.69 + changey;
+            }
+        }   
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "KillZone")
@@ -81,13 +126,22 @@ public class BallScript : MonoBehaviour
             //if enter is pressed, randomize between y = 1 and y = -1, and set x to whichever side got scored on
         }
     }
+
+    private double absolutedouble(double x)
+    {
+        if(x<0)
+        {
+            return -x;
+        }
+        return x;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        print("Collision Detected");
         if (collision.gameObject.tag == "Player")
         {
-            print("Player Collision");
             x_value = -x_value;
+            target_x = x_value;
             if (y_value > 0)
             {
                 y_value = Random.Range(0.0f,1.0f);
@@ -96,12 +150,13 @@ public class BallScript : MonoBehaviour
             {
                 y_value = Random.Range(-1.0f,0.0f);
             }
+            //Predict the final y-value of the ball as distance from the bottom wall
+            prediction(this.transform.position.y - -4.69, absolutedouble(19.325/x_value)*y_value);
             _speed = _speed + 0.2f;
         }
 
         if (collision.gameObject.tag == "Wall")
         {
-            print("Wall Collision");
             y_value = -y_value;
         }
     }
