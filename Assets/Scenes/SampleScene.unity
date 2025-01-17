@@ -838,6 +838,18 @@ PrefabInstance:
       propertyPath: ball
       value: 
       objectReference: {fileID: 235989666}
+    - target: {fileID: -4812591787566887762, guid: 97ed75bd7bf434944ae10d2e740b5f34, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2609851393520442815, guid: 97ed75bd7bf434944ae10d2e740b5f34, type: 3}
+      propertyPath: ball
+      value: 
+      objectReference: {fileID: 235989666}
+    - target: {fileID: 2609851393520442815, guid: 97ed75bd7bf434944ae10d2e740b5f34, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4459205603672030290, guid: 97ed75bd7bf434944ae10d2e740b5f34, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10

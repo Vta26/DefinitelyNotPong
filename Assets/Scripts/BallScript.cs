@@ -17,6 +17,8 @@ public class BallScript : MonoBehaviour
     public double target_y;
     public TextMeshProUGUI _text;
     public TextMeshProUGUI _winner_text;
+    private bool isPaused = false;
+
     void Start()
     {
         y_value = Random.Range(-1.0f,1.0f);
@@ -27,28 +29,20 @@ public class BallScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (scored != 0 && Input.GetKeyDown(KeyCode.Return))
+        if (game_over & Input.GetKeyDown(KeyCode.Return))
         {
-            y_value = Random.Range(-1.0f,1.0f);
-            if (scored < 0)
-            {
-                x_value = -1.0f;
-            }
-            else{
-                x_value = 1.0f;
-            }
-            scored = 0;
-            if (game_over)
-            {
-                score_left = 0;
-                score_right = 0;
-                _text.text = score_left.ToString() + ":" + score_right.ToString();
-                game_over = false;
-                _winner_text.text = "";
-            }
+            game_over = false;
+            score_left = 0;
+            score_right = 0;
+            _text.text = score_left.ToString() + ":" + score_right.ToString();
+            _winner_text.text = "";
         }
-        Vector3 move = new Vector3(x_value, y_value, 0);
-        transform.position += move * _speed * Time.deltaTime;
+
+        if (!isPaused & !game_over)
+        {
+            Vector3 move = new Vector3(x_value, y_value, 0);
+            transform.position += move * _speed * Time.deltaTime;
+        }
     }
 
     private void prediction(double tempy, double changey)
@@ -62,7 +56,7 @@ public class BallScript : MonoBehaviour
             prediction(9.38,changey);
             return;
         }
-        if (total_change<0)//why is this not working :((
+        if (total_change<0)
         {
             changey = -(changey + tempy);
             prediction(0,changey);
@@ -91,7 +85,7 @@ public class BallScript : MonoBehaviour
             {
                 target_y = tempy - 4.69 + changey;
             }
-        }   
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -114,17 +108,35 @@ public class BallScript : MonoBehaviour
             _text.text = score_left.ToString() + ":" + score_right.ToString();
             if (score_left >= 10)
             {
+                print("Press Enter to continue");
                 _winner_text.text = "Player 1 Wins!";
                 game_over = true;
             }
             if (score_right >= 10)
             {
+                print("Press Enter to continue");
                 _winner_text.text = "Player 2 Wins!";
                 game_over = true;
             }
-            print("Press Enter to continue");
-            //if enter is pressed, randomize between y = 1 and y = -1, and set x to whichever side got scored on
+            StartCoroutine(PauseBeforeRestart());
         }
+    }
+
+    private IEnumerator PauseBeforeRestart()
+    {
+        isPaused = true;
+        yield return new WaitForSeconds(3f);
+        isPaused = false;
+        y_value = Random.Range(-1.0f,1.0f);
+        if (scored < 0)
+        {
+            x_value = -1.0f;
+        }
+        else
+        {
+            x_value = 1.0f;
+        }
+        scored = 0;
     }
 
     private double absolutedouble(double x)
