@@ -18,9 +18,11 @@ public class BallScript : MonoBehaviour
     public TextMeshProUGUI _text;
     public TextMeshProUGUI _winner_text;
     private bool isPaused = false;
+    private AudioSource source;
 
     void Start()
     {
+        source = GetComponent<AudioSource>();
         y_value = Random.Range(-1.0f,1.0f);
         _text.text = score_left.ToString() + ":" + score_right.ToString();
         print("Game Start");
@@ -92,6 +94,8 @@ public class BallScript : MonoBehaviour
     {
         if (collision.gameObject.tag == "KillZone")
         {
+            //Play kill sound
+            source.Play();
             x_value = 0;
             y_value = 0;
             if (transform.position.x>0){

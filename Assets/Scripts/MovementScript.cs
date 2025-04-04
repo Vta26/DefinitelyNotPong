@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class MovementScript : MonoBehaviour
 {
-    public float _speed = 10.0f;
+    private float _speed;
     public GameObject ball;
+    AudioSource source;
 
-    // Start is called before the first frame update
     void Start()
     {
-
+        source = GetComponent<AudioSource>();
+        source.playOnAwake = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         _speed = ball.GetComponent<BallScript>()._speed*2;
@@ -24,5 +24,16 @@ public class MovementScript : MonoBehaviour
         }
         Vector3 move = new Vector3(0,Input.GetAxisRaw("Vertical"),0);
         transform.position += move * _speed * Time.deltaTime;
+    }
+
+    private void OnCollisionEnter2D (Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Ball")
+        {
+            if (source == null){
+                source = GetComponent<AudioSource>();
+            }
+            source.Play();
+        }
     }
 }

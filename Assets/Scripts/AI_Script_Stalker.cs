@@ -10,16 +10,12 @@ public class AI_Script_Stalker : MonoBehaviour
     private int y_move;
     public int style = 1;
     private double target;
+    AudioSource source;
 
-    // Start is called before the first frame update
     void Start()
     {
-        
-    }
-
-    void Predict()
-    {
-
+        source = GetComponent<AudioSource>();
+        source.playOnAwake = false;
     }
 
     void TypeChange()
@@ -40,7 +36,6 @@ public class AI_Script_Stalker : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         _speed = ball.GetComponent<BallScript>()._speed*2;
@@ -79,6 +74,10 @@ public class AI_Script_Stalker : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ball")
         {
+            if (source == null){
+                source = GetComponent<AudioSource>();
+            }
+            source.Play();
             TypeChange();
         }
     }

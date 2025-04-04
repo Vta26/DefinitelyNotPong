@@ -313,7 +313,8 @@ PrefabInstance:
       propertyPath: m_TagString
       value: KillZone
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -894,7 +895,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Paddle (Left)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -981,6 +983,10 @@ PrefabInstance:
       objectReference: {fileID: 235989666}
     - target: {fileID: -4812591787566887762, guid: 97ed75bd7bf434944ae10d2e740b5f34, type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3972915809710655614, guid: 97ed75bd7bf434944ae10d2e740b5f34, type: 3}
+      propertyPath: m_PlayOnAwake
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2609851393520442815, guid: 97ed75bd7bf434944ae10d2e740b5f34, type: 3}
