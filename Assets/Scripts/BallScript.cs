@@ -17,14 +17,43 @@ public class BallScript : MonoBehaviour
     public double target_y;
     public TextMeshProUGUI _text;
     public TextMeshProUGUI _winner_text;
+    public TextMeshProUGUI _Countdown;
     private bool isPaused = false;
     private AudioSource source;
+    public int score_to_win = 10;
+    public AudioClip clip;
+
+    float currCountdownValue;
+    public IEnumerator StartCountdown(float countdownValue = 3)
+    {
+        source.PlayOneShot(clip);
+        currCountdownValue = countdownValue;
+        while (currCountdownValue > 0)
+        {
+            _Countdown.text = currCountdownValue.ToString();
+            yield return new WaitForSeconds(1.0f);
+            currCountdownValue--;
+        }
+        _Countdown.text = "";
+    }
+
+    private IEnumerator PauseBeforeRestart()
+    {
+        isPaused = true;
+        StartCoroutine(StartCountdown());
+        yield return new WaitForSeconds(3f);
+        isPaused = false;
+        y_value = Random.Range(-1.0f,1.0f);
+    }
+
 
     void Start()
     {
         source = GetComponent<AudioSource>();
-        y_value = Random.Range(-1.0f,1.0f);
+        var Left_or_Right = new float[] {-1.0f,1.0f};
+        x_value = Left_or_Right[Random.Range(0,1)];
         _text.text = score_left.ToString() + ":" + score_right.ToString();
+        StartCoroutine(PauseBeforeRestart());
         print("Game Start");
     }
 
@@ -38,6 +67,7 @@ public class BallScript : MonoBehaviour
             score_right = 0;
             _text.text = score_left.ToString() + ":" + score_right.ToString();
             _winner_text.text = "";
+            StartCoroutine(PauseBeforeRestart());
         }
 
         if (!isPaused & !game_over)
@@ -110,37 +140,27 @@ public class BallScript : MonoBehaviour
             transform.position = new Vector3(0,0,0);
             _speed = 5.0f;
             _text.text = score_left.ToString() + ":" + score_right.ToString();
-            if (score_left >= 10)
+            if (score_left >= score_to_win)
             {
                 print("Press Enter to continue");
-                _winner_text.text = "Player 1 Wins!";
+                _winner_text.text = "Player 1 Wins!\nPress Enter to Continue";
                 game_over = true;
             }
-            if (score_right >= 10)
+            if (score_right >= score_to_win)
             {
-                print("Press Enter to continue");
-                _winner_text.text = "Player 2 Wins!";
+                _winner_text.text = "Player 2 Wins!\nPress Enter to Continue";
                 game_over = true;
             }
-            StartCoroutine(PauseBeforeRestart());
+            if (scored < 0)
+            {
+                x_value = -1.0f;
+            }
+            else
+            {
+                x_value = 1.0f;
+            }
+            scored = 0;
         }
-    }
-
-    private IEnumerator PauseBeforeRestart()
-    {
-        isPaused = true;
-        yield return new WaitForSeconds(3f);
-        isPaused = false;
-        y_value = Random.Range(-1.0f,1.0f);
-        if (scored < 0)
-        {
-            x_value = -1.0f;
-        }
-        else
-        {
-            x_value = 1.0f;
-        }
-        scored = 0;
     }
 
     private double absolutedouble(double x)
